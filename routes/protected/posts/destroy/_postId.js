@@ -11,7 +11,10 @@ module.exports = async (req, res, next) => {
     return res.status(401).json({ message: '권한이 없습니다.' })
 
   try {
-    await Post.protected.update([{ status: 4 }, postId])
+    await Post.protected.update([
+      { status: 4, deletedAt: moment().format('YYYY-MM-DD hh:mm:ss') },
+      postId
+    ])
     res.status(200).json(true)
   } catch (err) {
     next(err)

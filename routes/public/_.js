@@ -12,8 +12,8 @@ module.exports = async (_, res, next) => {
     posts.forEach((post, i) => (post.key = `${i + 1}`))
     if (newProfessions) professions.unshift(newProfessions)
     professions.forEach(profession => {
-      const u = profession.uuid.split(',')
-      const n = profession.korName.split(',')
+      const u = profession.uuid ? profession.uuid.split(',') : []
+      const n = profession.korName ? profession.korName.split(',') : []
       profession.occupations = []
       u.forEach((v, i) => {
         let temp = {}

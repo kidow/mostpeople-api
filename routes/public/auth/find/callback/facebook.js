@@ -1,7 +1,7 @@
 const passport = require('passport')
 const baseURL =
   process.env.NODE_ENV === 'production'
-    ? 'https://www.mostpeople.kr'
+    ? 'https://mostpeople.kr'
     : 'http://localhost:3000'
 
 // GET /auth/callback/facebook

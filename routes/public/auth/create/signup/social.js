@@ -9,11 +9,12 @@ module.exports = async (req, res, next) => {
       .required(),
     nickname: Joi.string()
       .min(3)
-      .max(8)
+      .max(10)
       .required(),
     occupationId: Joi.string().allow('')
   })
   const { error } = Joi.validate(req.body, schema)
+
   if (error) return res.sendStatus(405)
 
   const { email, nickname, occupationId } = req.body

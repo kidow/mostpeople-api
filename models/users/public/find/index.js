@@ -42,6 +42,7 @@ const findByEmail = injection => {
 }
 
 const findById = injection => {
+  console.log('injection: ', injection)
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
@@ -181,8 +182,6 @@ const findByNickname = injection => {
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
-
-      if (!result.length) return resolve({})
 
       resolve(result[0])
     })

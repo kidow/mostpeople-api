@@ -14,8 +14,8 @@ module.exports = async (req, res, next) => {
       .min(8)
       .required(),
     nickname: Joi.string()
-      .min(4)
-      .max(8)
+      .min(3)
+      .max(10)
       .required(),
     occupationId: Joi.string().allow('')
   })

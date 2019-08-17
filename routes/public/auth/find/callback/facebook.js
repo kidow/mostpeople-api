@@ -5,8 +5,8 @@ const baseURL =
     : 'http://localhost:3000'
 
 // GET /auth/callback/facebook
-module.exports = async (req, res, next) => {
-  passport.authenticate('facebook', async (err, user, info) => {
+module.exports = (req, res, next) => {
+  passport.authenticate('facebook', (err, user, info) => {
     try {
       if (err) return next(err)
       else if (user) {

@@ -13,6 +13,7 @@ router.get(
     scope: ['email']
   })
 )
+router.get('/kakao', passport.authenticate('kakao'))
 router.get('/me', require('./me'))
 
 router.use('/callback', require('./callback'))

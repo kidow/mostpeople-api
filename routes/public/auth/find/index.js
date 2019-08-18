@@ -4,23 +4,20 @@ const passport = require('passport')
 router.get(
   '/facebook',
   passport.authenticate('facebook', {
-    scope: ['email'],
-    session: true
+    scope: ['email']
   })
 )
 router.get(
   '/google',
   passport.authenticate('google', {
-    scope: ['email'],
-    session: true
+    scope: ['email']
   })
 )
+router.get('/kakao', passport.authenticate('kakao', {}))
 router.get(
-  '/kakao',
-  passport.authenticate('kakao', {
-    session: true,
-    successRedirect: '/success',
-    failureRedirect: '/failure'
+  '/naver',
+  passport.authenticate('naver', {
+    scope: ['email']
   })
 )
 router.get('/me', require('./me'))

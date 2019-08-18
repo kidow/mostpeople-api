@@ -10,6 +10,7 @@ const findByEmail = injection => {
         u.status,
         u.password,
         u.nickname,
+        u.provider,
         u.providerId,
         u.occupationId,
         u.facebookUrl,
@@ -42,7 +43,6 @@ const findByEmail = injection => {
 }
 
 const findById = injection => {
-  console.log('injection: ', injection)
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
@@ -52,6 +52,7 @@ const findById = injection => {
         u.status,
         u.password,
         u.nickname,
+        u.provider,
         u.providerId,
         u.occupationId,
         u.facebookUrl,
@@ -95,47 +96,6 @@ const findByUuid = injection => {
         users
       WHERE
         uuid = ?
-    `
-    con.query(sql, injection, (err, result) => {
-      if (err) return reject(err)
-
-      if (!result.length) return resolve({})
-
-      resolve(result[0])
-    })
-  })
-}
-
-const findByProviderId = injection => {
-  return new Promise((resolve, reject) => {
-    const sql = `
-      SELECT
-        u.id,
-        u.uuid,
-        u.email,
-        u.status,
-        u.password,
-        u.nickname,
-        u.providerId,
-        u.occupationId,
-        u.facebookUrl,
-        u.twitterUrl,
-        u.intro,
-        i.url AS profileUrl,
-        i.alt AS profileAlt,
-        o.korName
-      FROM
-        users u
-      LEFT JOIN
-        images i
-      ON
-        u.imageId = i.id
-      LEFT JOIN
-        occupations o
-      ON
-        o.uuid = u.occupationId
-      WHERE
-        u.providerId = ?
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
@@ -228,7 +188,6 @@ module.exports = {
   findByEmail,
   findById,
   findByUuid,
-  findByProviderId,
   findByNickname,
   findBySearch
 }

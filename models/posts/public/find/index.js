@@ -185,7 +185,10 @@ const findById = injection => {
   })
 }
 
-const findByOccupationId = injection => {
+const findByOccupationId = ({ offset }, occupationId) => {
+  const offsetSQL = offset ? 'OFFSET ?' : ''
+  let injection = [occupationId]
+  if (offset) injection.push(Number(offset))
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
@@ -222,6 +225,9 @@ const findByOccupationId = injection => {
       WHERE
         p.occupationId = ? AND
         p.status = 1
+
+      LIMIT 20
+      ${offsetSQL}
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)

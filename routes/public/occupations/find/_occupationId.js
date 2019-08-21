@@ -1,6 +1,5 @@
 const Occupation = require('@models/occupations')
 const Post = require('@models/posts')
-const Intro = require('@models/introductions')
 
 // GET /occupations/:occupationId
 module.exports = async (req, res, next) => {
@@ -8,7 +7,7 @@ module.exports = async (req, res, next) => {
 
   try {
     const [posts, occupation] = await Promise.all([
-      Post.findByOccupationId(occupationId),
+      Post.findByOccupationId(req.query, occupationId),
       Occupation.findById(occupationId)
     ])
     posts.forEach((post, i) => (post.key = `${i + 1}`))

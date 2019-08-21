@@ -176,6 +176,10 @@ const findById = injection => {
 
       if (!result.length) return resolve({})
 
+      let { thumbnailUrl, pretext } = cheerio(result[0].content)
+      result[0].thumbnailUrl = thumbnailUrl
+      result[0].pretext = pretext
+
       resolve(result[0])
     })
   })

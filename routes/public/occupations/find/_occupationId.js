@@ -22,7 +22,6 @@ module.exports = async (req, res, next) => {
         }
       ]
     }
-    console.log(payload)
     res.status(200).json(payload)
   } catch (err) {
     next(err)

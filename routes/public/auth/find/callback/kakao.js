@@ -1,4 +1,5 @@
 const passport = require('passport')
+const { encodeToken } = require('@lib/jwt')
 const baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://mostpeople.kr'
@@ -11,33 +12,47 @@ module.exports = (req, res, next) => {
     {
       scope: ['email']
     },
-    (err, user, info) => {
+    async (err, user, info) => {
       try {
         if (err) {
-          console.log(1)
           next(err)
         } else if (user) {
-          console.log(2)
           delete user.password
+          const payload = {
+            uuid: user.uuid,
+            email: user.email,
+            nickname: user.nickname,
+            occupationId: user.occupationId,
+            status: user.status,
+            providerId: user.providerId
+          }
+          const token = await encodeToken(payload)
+          const options = {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+            domain:
+              process.env.NODE_ENV === 'production'
+                ? '.mostpeople.kr'
+                : 'localhost'
+          }
           if (info && info.code === 1005) {
-            console.log(3)
             req.login(user, err => {
               if (err) return next(err)
-              res.send(
-                `<script>alert('${
-                  info.message
-                }'); location.href='${baseURL}'</script>`
-              )
+              res
+                .cookie('access_token', token, options)
+                .send(
+                  `<script>alert('${
+                    info.message
+                  }'); location.href='${baseURL}'</script>`
+                )
             })
           } else {
-            console.log(4)
             req.login(user, err => {
               if (err) return next(err)
-              res.redirect(baseURL)
+              res.cookie('access_token', token, options).redirect(baseURL)
             })
           }
         } else if (info.code === 1001 || info.code === 1002) {
-          console.log(5)
           res.send(
             `<script>alert('${
               info.message
@@ -46,7 +61,6 @@ module.exports = (req, res, next) => {
             }'</script>`
           )
         } else if (info.code === 1003 || info.code === 1004) {
-          console.log(6)
           res.send(
             `<script>alert('${
               info.message

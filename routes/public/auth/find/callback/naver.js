@@ -1,4 +1,5 @@
 const passport = require('passport')
+const { encodeToken } = require('@lib/jwt')
 const baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://mostpeople.kr'

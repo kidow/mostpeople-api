@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi')
-const jwt = require('@lib/jwt')
+const { encodeToken } = require('@lib/jwt')
 const recaptcha = require('@lib/recaptcha')
 const passport = require('passport')
 const validate = require('@lib/validate')
@@ -37,7 +37,7 @@ module.exports = async (req, res, next) => {
       providerId: user.providerId
     }
     try {
-      const token = await jwt.encodeToken(payload)
+      const token = await encodeToken(payload)
       const options = {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,

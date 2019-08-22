@@ -1,5 +1,6 @@
 const User = require('@models/users')
 const Joi = require('@hapi/joi')
+const validate = require('@lib/validate')
 
 // POST /auth/signup/social
 module.exports = async (req, res, next) => {
@@ -13,9 +14,7 @@ module.exports = async (req, res, next) => {
       .required(),
     occupationId: Joi.string().allow('')
   })
-  const { error } = Joi.validate(req.body, schema)
-
-  if (error) return res.sendStatus(405)
+  validate(req.body, schema, res, next)
 
   const { email, nickname, occupationId } = req.body
 

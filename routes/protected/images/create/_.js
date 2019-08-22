@@ -3,8 +3,6 @@ const multer = require('@lib/multerS3')
 
 // POST /prt/images
 module.exports = (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const upload = multer.single('mostpeople')
 
   upload(req, res, async err => {

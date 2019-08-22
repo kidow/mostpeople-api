@@ -3,8 +3,6 @@ const Comment = require('@models/comments')
 
 // GET /prt/users/timeline
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   try {
     const [posts, comments] = await Promise.all([
       Post.protected.findTimeline(req.user.uuid),

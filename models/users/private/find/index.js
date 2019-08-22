@@ -1,10 +1,12 @@
 const con = require('@mysql')
 
 const find = ({ search, offset }) => {
-  const searchSQL = search ? `WHERE (nickname LIKE ? OR email LIKE ?)` : ''
+  const searchSQL = search
+    ? `WHERE (u.nickname LIKE ? OR u.email LIKE ? OR o.korName LIKE ?)`
+    : ''
   const offsetSQL = offset ? 'OFFSET ?' : ''
   let injection = []
-  if (search) injection.push(`%${search}%`, `%${search}%`)
+  if (search) injection.push(`%${search}%`, `%${search}%`, `%${search}%`)
   if (offset) injection.push(Number(offset))
   return new Promise((resolve, reject) => {
     const sql = `
@@ -13,7 +15,7 @@ const find = ({ search, offset }) => {
         u.status,
         u.email,
         u.nickname,
-        u.occupation,
+        o.korName,
         u.provider,
         u.facebookUrl,
         u.twitterUrl,
@@ -60,6 +62,10 @@ const find = ({ search, offset }) => {
           WHERE
             images.id = u.imageId
         )
+      LEFT JOIN
+        occupations o
+      ON
+        o.uuid = u.occupationId
 
       ${searchSQL}
 
@@ -99,7 +105,7 @@ const findById = injection => {
         u.status,
         u.email,
         u.nickname,
-        u.occupation,
+        o.korName,
         u.provider,
         u.facebookUrl,
         u.twitterUrl,
@@ -146,6 +152,10 @@ const findById = injection => {
           WHERE
             images.id = u.imageId
         )
+      LEFT JOIN
+        occupations o
+      ON
+        o.uuid = u.occupationId
 
       WHERE
         u.id = ?

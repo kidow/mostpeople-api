@@ -1,5 +1,6 @@
 const router = require('express').Router()
+const { isLoggedIn } = require('@middle')
 
-router.put('/:occupationId', require('./_occupationId'))
+router.put('/:occupationId', isLoggedIn, require('./_occupationId'))
 
 module.exports = router

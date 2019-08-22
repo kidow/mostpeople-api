@@ -2,8 +2,6 @@ const Post = require('@models/posts')
 
 // PUT /prt/posts/:postId
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const { postId } = req.params
   const { userId } = req.query
 

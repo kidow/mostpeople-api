@@ -1,6 +1,7 @@
 const router = require('express').Router()
+const { isAdmin } = require('@middle')
 
-router.get('/', require('./_'))
-router.get('/:id', require('./_id'))
+router.get('/', isAdmin, require('./_'))
+router.get('/:id', isAdmin, require('./_id'))
 
 module.exports = router

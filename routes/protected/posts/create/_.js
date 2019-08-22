@@ -7,8 +7,6 @@ const validate = require('@lib/validate')
 
 // POST /prt/posts
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const schema = Joi.object().keys({
     occupationId: Joi.string().required(),
     title: Joi.string().required(),

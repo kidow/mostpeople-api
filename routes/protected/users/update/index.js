@@ -1,7 +1,8 @@
 const router = require('express').Router()
+const { isLoggedIn } = require('@middle')
 
-router.put('/', require('./_'))
-router.put('/password', require('./password'))
-router.put('/image', require('./image'))
+router.put('/', isLoggedIn, require('./_'))
+router.put('/password', isLoggedIn, require('./password'))
+router.put('/image', isLoggedIn, require('./image'))
 
 module.exports = router

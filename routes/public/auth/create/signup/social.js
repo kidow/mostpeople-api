@@ -1,6 +1,7 @@
 const User = require('@models/users')
 const Joi = require('@hapi/joi')
 const validate = require('@lib/validate')
+const { encodeToken } = require('@lib/jwt')
 
 // POST /auth/signup/social
 module.exports = async (req, res, next) => {
@@ -30,9 +31,19 @@ module.exports = async (req, res, next) => {
     if (isNicknameExisted)
       return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' })
     await User.update([{ nickname, occupationId }, email])
+    const token = await encodeToken(Object.assign({}, user))
+    const options = {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      domain:
+        process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
+    }
     req.login(user, err => {
       if (err) return next(err)
-      res.status(200).json(true)
+      res
+        .status(200)
+        .cookie('access_token', token, options)
+        .json(true)
     })
   } catch (err) {
     next(err)

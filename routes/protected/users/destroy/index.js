@@ -1,5 +1,6 @@
 const router = require('express').Router()
+const { isLoggedIn } = require('@middle')
 
-router.delete('/', require('./_'))
+router.delete('/', isLoggedIn, require('./_'))
 
 module.exports = router

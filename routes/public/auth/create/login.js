@@ -15,12 +15,6 @@ module.exports = async (req, res, next) => {
     // token: Joi.string().required()
   })
   validate(req.body, schema, res, next)
-  // const { error } = Joi.validate(req.body, schema)
-
-  // if (error)
-  //   return res
-  //     .status(412)
-  //     .json({ message: '값을 올바르게 입력했는지 확인해주세요' })
 
   // const { success } = await recaptcha(req.body.token, req.ip)
   // if (!success) return res.sendStatus(405)
@@ -28,16 +22,8 @@ module.exports = async (req, res, next) => {
   passport.authenticate('login', async (err, user, info) => {
     if (err) return next(err)
     if (info && info.message) return res.status(info.status).json(info)
-    const payload = {
-      uuid: user.uuid,
-      email: user.email,
-      nickname: user.nickname,
-      occupationId: user.occupationId,
-      status: user.status,
-      providerId: user.providerId
-    }
     try {
-      const token = await encodeToken(payload)
+      const token = await encodeToken(Object.assign({}, user))
       const options = {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,

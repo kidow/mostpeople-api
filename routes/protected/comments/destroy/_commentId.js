@@ -3,8 +3,6 @@ const moment = require('moment')
 
 // DELETE /prt/comments/:commentId
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const { commentId } = req.params
 
   try {

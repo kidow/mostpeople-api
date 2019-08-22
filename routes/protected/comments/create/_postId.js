@@ -1,17 +1,15 @@
 const Comment = require('@models/comments')
 const Joi = require('@hapi/joi')
 const uuid = require('@lib/uuid')
+const validate = require('@lib/validate')
 
 // POST /prt/comments/:postId
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const schema = Joi.object().keys({
     content: Joi.string().required(),
     parentId: Joi.number()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return res.sendStatus(405)
+  validate(req.body, schema, res, next)
 
   const { postId } = req.params
 

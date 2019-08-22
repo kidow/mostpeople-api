@@ -1,6 +1,7 @@
 const User = require('@models/users')
 const Joi = require('@hapi/joi')
 const sendgrid = require('@lib/sendgrid')
+const validate = require('@lib/validate')
 
 // POST /auth/email
 module.exports = async (req, res, next) => {
@@ -10,8 +11,7 @@ module.exports = async (req, res, next) => {
       .lowercase()
       .required()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return res.sendStatus(412)
+  validate(req.body, schema, res, next)
 
   const { email } = req.body
   const { type } = req.query

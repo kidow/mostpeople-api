@@ -1,15 +1,13 @@
 const Like = require('@models/likes')
 const Joi = require('@hapi/joi')
+const validate = require('@lib/validate')
 
 // POST /prt/likes/:refId
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const schema = Joi.object().keys({
     refType: Joi.number().required()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return res.sendStatus(400)
+  validate(req.body, schema, res, next)
 
   const { refId } = req.params
   const { refType } = req.body

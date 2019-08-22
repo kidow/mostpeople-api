@@ -1,12 +1,9 @@
 const User = require('@models/users')
 const Joi = require('@hapi/joi')
+const validate = require('@lib/validate')
 
 // PUT /prt/users
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
-  console.log(req.body)
-
   const schema = Joi.object().keys({
     nickname: Joi.string()
       .min(3)
@@ -19,11 +16,7 @@ module.exports = async (req, res, next) => {
     uuid: Joi.string().required(),
     occupationId: Joi.string().allow(null)
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error)
-    return process.env.NODE_ENV === 'production'
-      ? res.sendStatus(405)
-      : next(error)
+  validate(req.body, schema, res, next)
 
   if (req.body.uuid !== req.user.uuid)
     return res.status(401).json({ message: '권한이 없습니다.' })

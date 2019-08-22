@@ -1,6 +1,7 @@
 const User = require('@models/users')
 const bcrypt = require('bcrypt')
 const Joi = require('@hapi/joi')
+const validate = require('@lib/validate')
 
 // PUT /auth/forgot
 module.exports = async (req, res, next) => {
@@ -13,8 +14,7 @@ module.exports = async (req, res, next) => {
       .min(8)
       .required()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return res.sendStatus(412)
+  validate(req.body, schema, res, next)
 
   const { email, password } = req.body
 

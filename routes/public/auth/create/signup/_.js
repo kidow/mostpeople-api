@@ -2,6 +2,7 @@ const Joi = require('@hapi/joi')
 const jwt = require('@lib/jwt')
 const passport = require('passport')
 const User = require('@models/users')
+const validate = require('@lib/validate')
 
 // POST /auth/signup
 module.exports = async (req, res, next) => {
@@ -19,8 +20,7 @@ module.exports = async (req, res, next) => {
       .required(),
     occupationId: Joi.string().allow('')
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return res.sendStatus(412)
+  validate(req.body, schema, res, next)
 
   passport.authenticate('signup', async (err, user, info) => {
     if (err) return next(err)

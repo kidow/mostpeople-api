@@ -1,16 +1,14 @@
 const User = require('@models/users')
 const bcrypt = require('bcrypt')
 const Joi = require('@hapi/joi')
+const validate = require('@lib/validate')
 
 // PUT /prt/users/password
 module.exports = async (req, res, next) => {
-  if (!req.user) return res.status(401).json({ message: '로그인을 해주세요.' })
-
   const schema = Joi.object().keys({
     password: Joi.string().required()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return res.sendStatus(405)
+  validate(req.body, schema, res, next)
 
   const { password } = req.body
 

@@ -2,6 +2,7 @@ const Joi = require('@hapi/joi')
 const jwt = require('@lib/jwt')
 const recaptcha = require('@lib/recaptcha')
 const passport = require('passport')
+const validate = require('@lib/validate')
 
 // POST /auth/login
 module.exports = async (req, res, next) => {
@@ -13,11 +14,13 @@ module.exports = async (req, res, next) => {
     password: Joi.string().required(),
     token: Joi.string().required()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error)
-    return res
-      .status(412)
-      .json({ message: '값을 올바르게 입력했는지 확인해주세요' })
+  validate(req.body, schema, res, next)
+  // const { error } = Joi.validate(req.body, schema)
+
+  // if (error)
+  //   return res
+  //     .status(412)
+  //     .json({ message: '값을 올바르게 입력했는지 확인해주세요' })
 
   const { success } = await recaptcha(req.body.token, req.ip)
   if (!success) return res.sendStatus(405)

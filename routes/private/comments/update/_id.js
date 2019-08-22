@@ -1,5 +1,6 @@
 const Comment = require('@models/comments')
 const Joi = require('@hapi/joi')
+const validate = require('@lib/validate')
 
 // PUT /prv/comments/:id
 module.exports = async (req, res, next) => {
@@ -10,8 +11,9 @@ module.exports = async (req, res, next) => {
   const schema = Joi.object().keys({
     status: Joi.number().required()
   })
-  const { error } = Joi.validate(req.body, schema)
-  if (error) return next(error)
+  validate(req.body, schema, res, next)
+  // const { error } = Joi.validate(req.body, schema)
+  // if (error) return next(error)
 
   try {
     await Comment.private.update([req.body, req.params.id])

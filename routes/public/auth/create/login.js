@@ -11,8 +11,8 @@ module.exports = async (req, res, next) => {
       .email()
       .lowercase()
       .required(),
-    password: Joi.string().required(),
-    token: Joi.string().required()
+    password: Joi.string().required()
+    // token: Joi.string().required()
   })
   validate(req.body, schema, res, next)
   // const { error } = Joi.validate(req.body, schema)
@@ -22,8 +22,8 @@ module.exports = async (req, res, next) => {
   //     .status(412)
   //     .json({ message: '값을 올바르게 입력했는지 확인해주세요' })
 
-  const { success } = await recaptcha(req.body.token, req.ip)
-  if (!success) return res.sendStatus(405)
+  // const { success } = await recaptcha(req.body.token, req.ip)
+  // if (!success) return res.sendStatus(405)
 
   passport.authenticate('login', async (err, user, info) => {
     if (err) return next(err)

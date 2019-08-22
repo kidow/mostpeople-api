@@ -75,7 +75,19 @@ const findByGroup = _ => {
       SELECT
         GROUP_CONCAT(o.uuid) AS uuid,
         p.name,
-        GROUP_CONCAT(o.korName) AS korName
+        GROUP_CONCAT(o.korName) AS korName,
+        (
+          SELECT
+            COUNT(posts.id)
+          FROM
+            posts
+          LEFT JOIN
+            occupations
+          ON
+            occupations.uuid = posts.occupationId
+          WHERE
+            occupations.uuid = o.uuid
+        ) AS postsCount
       FROM
         occupations o
       JOIN
@@ -116,15 +128,27 @@ const findByGroupByNew = _ => {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
-        GROUP_CONCAT(uuid) AS uuid,
+        GROUP_CONCAT(o.uuid) AS uuid,
         '신규' AS name,
-        GROUP_CONCAT(korName) AS korName
+        GROUP_CONCAT(o.korName) AS korName,
+        (
+          SELECT
+            COUNT(posts.id)
+          FROM
+            posts
+          LEFT JOIN
+            occupations
+          ON
+            occupations.uuid = posts.occupationId
+          WHERE
+            occupations.uuid = o.uuid
+        ) AS postsCount
       FROM
-        occupations
+        occupations o
       WHERE
-        DATE_FORMAT(createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -7 DAY)
+        DATE_FORMAT(o.createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -7 DAY)
       ORDER BY
-        createdAt DESC
+        o.createdAt DESC
     `
     con.query(sql, (err, result) => {
       if (err) return reject(err)

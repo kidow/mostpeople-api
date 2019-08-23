@@ -32,15 +32,14 @@ module.exports = async (req, res, next, err, user, info) => {
           if (err) return next(err)
           res.cookie('access_token', token, options).redirect(baseURL)
         })
-    } else if (info.code === 1001 || info.code === 1002)
+    } else if (info.code === 1001 || info.code === 1002) {
+      req.session.email = info.email
       res.send(
         `<script>alert('${
           info.message
-        }');location.href='${baseURL}/signup/social?email=${
-          info.email
-        }'</script>`
+        }');location.href='${baseURL}/signup/social'</script>`
       )
-    else if (info.code === 1003 || info.code === 1004)
+    } else if (info.code === 1003 || info.code === 1004)
       res.send(
         `<script>alert('${
           info.message

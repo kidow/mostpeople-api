@@ -40,6 +40,7 @@ module.exports = async (req, res, next) => {
     }
     req.login(user, err => {
       if (err) return next(err)
+      req.session.email = ''
       res
         .status(200)
         .cookie('access_token', token, options)

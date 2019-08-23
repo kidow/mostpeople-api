@@ -1,4 +1,5 @@
 const { encodeToken } = require('@lib/jwt')
+const client = require('redis').createClient()
 const baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://mostpeople.kr'
@@ -33,7 +34,7 @@ module.exports = async (req, res, next, err, user, info) => {
           res.cookie('access_token', token, options).redirect(baseURL)
         })
     } else if (info.code === 1001 || info.code === 1002) {
-      req.session.email = info.email
+      client.set('email', info.email)
       res.send(
         `<script>alert('${
           info.message

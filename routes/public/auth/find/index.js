@@ -26,7 +26,7 @@ router.get(
   })
 )
 router.get('/me', require('./me'))
-router.get('/email', (req, res) => res.json({ email: req.session.email || '' }))
+router.get('/email', require('./email'))
 
 router.use('/callback', require('./callback'))
 

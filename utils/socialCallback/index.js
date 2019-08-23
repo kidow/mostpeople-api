@@ -44,7 +44,7 @@ module.exports = async (req, res, next, err, user, info) => {
       res.send(
         `<script>alert('${
           info.message
-        }'); location.href='${baseURL}/login'</script>`
+        }'); location.href='${baseURL}/signup'</script>`
       )
   } catch (err) {
     next(err)

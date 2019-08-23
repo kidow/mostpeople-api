@@ -130,7 +130,6 @@ const findById = injection => {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
-        p.uuid AS postId,
         p.title,
         p.content,
         p.createdAt,

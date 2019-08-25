@@ -3,6 +3,7 @@ const { encodeToken } = require('@lib/jwt')
 const recaptcha = require('@lib/recaptcha')
 const passport = require('passport')
 const validate = require('@lib/validate')
+const cookieOptions = require('@utils/cookieOptions')
 
 // POST /auth/login
 module.exports = async (req, res, next) => {
@@ -24,17 +25,11 @@ module.exports = async (req, res, next) => {
     if (info && info.message) return res.status(info.status).json(info)
     try {
       const token = await encodeToken(Object.assign({}, user))
-      const options = {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        domain:
-          process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
-      }
       req.login(user, err => {
         if (err) return next(err)
         res
           .status(200)
-          .cookie('access_token', token, options)
+          .cookie('access_token', token, cookieOptions)
           .json(true)
       })
     } catch (err) {

@@ -1,6 +1,6 @@
 const con = require('@mysql')
 
-const findByEmail = injection => {
+const findProfile = injection => {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
@@ -30,7 +30,8 @@ const findByEmail = injection => {
       ON
         o.uuid = u.occupationId
       WHERE
-        u.email = ?
+        u.status != 4 AND
+        ?
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
@@ -72,30 +73,8 @@ const findById = injection => {
       ON
         o.uuid = u.occupationId
       WHERE
+        u.status != 4 AND
         u.id = ?
-    `
-    con.query(sql, injection, (err, result) => {
-      if (err) return reject(err)
-
-      if (!result.length) return resolve({})
-
-      resolve(result[0])
-    })
-  })
-}
-
-const findByUuid = injection => {
-  return new Promise((resolve, reject) => {
-    const sql = `
-      SELECT
-        uuid,
-        email,
-        nickname,
-        occupationId
-      FROM
-        users
-      WHERE
-        uuid = ?
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
@@ -174,6 +153,7 @@ const findBySearch = injection => {
       ON
         o.uuid = u.occupationId
       WHERE
+        u.status = 1 AND
         u.nickname LIKE ?
     `
     con.query(sql, injection, (err, result) => {
@@ -185,9 +165,8 @@ const findBySearch = injection => {
 }
 
 module.exports = {
-  findByEmail,
+  findProfile,
   findById,
-  findByUuid,
   findByNickname,
   findBySearch
 }

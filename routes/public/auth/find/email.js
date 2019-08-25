@@ -1,12 +1,7 @@
-const client = require('redis').createClient()
-
 // GET /auth/email
-module.exports = (_, res, next) => {
+module.exports = (req, res, next) => {
   try {
-    client.get('email', (err, email) => {
-      if (err) next(err)
-      res.json({ email })
-    })
+    res.status(200).json(req.session.profile)
   } catch (err) {
     next(err)
   }

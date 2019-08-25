@@ -1,5 +1,5 @@
 const { encodeToken } = require('@lib/jwt')
-const client = require('redis').createClient()
+const cookieOptions = require('@utils/cookieOptions')
 const baseURL =
   process.env.NODE_ENV === 'production'
     ? 'https://mostpeople.kr'
@@ -11,17 +11,11 @@ module.exports = async (req, res, next, err, user, info) => {
     else if (user) {
       delete user.password
       const token = await encodeToken(Object.assign({}, user))
-      const options = {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        domain:
-          process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
-      }
       if (info && info.code === 1005) {
         req.login(user, err => {
           if (err) return next(err)
           res
-            .cookie('access_token', token, options)
+            .cookie('access_token', token, cookieOptions)
             .send(
               `<script>alert('${
                 info.message
@@ -31,10 +25,13 @@ module.exports = async (req, res, next, err, user, info) => {
       } else
         req.login(user, err => {
           if (err) return next(err)
-          res.cookie('access_token', token, options).redirect(baseURL)
+          res.cookie('access_token', token, cookieOptions).redirect(baseURL)
         })
     } else if (info.code === 1001 || info.code === 1002) {
-      client.set('email', info.email)
+      req.session.profile = {
+        email: info.email,
+        emailVerifed: !!info.emailVerifed
+      }
       res.send(
         `<script>alert('${
           info.message

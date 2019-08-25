@@ -173,7 +173,7 @@ const findById = injection => {
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
 
-      if (!result.length) return resolve({})
+      if (!result[0].title) return resolve(result[0])
 
       let { thumbnailUrl, pretext } = cheerio(result[0].content)
       result[0].thumbnailUrl = thumbnailUrl

@@ -3,6 +3,7 @@ const jwt = require('@lib/jwt')
 const passport = require('passport')
 const User = require('@models/users')
 const validate = require('@lib/validate')
+const cookieOptions = require('@utils/cookieOptions')
 
 // POST /auth/signup
 module.exports = async (req, res, next) => {
@@ -25,58 +26,18 @@ module.exports = async (req, res, next) => {
   passport.authenticate('signup', async (err, user, info) => {
     if (err) return next(err)
     if (info && info.message) return res.status(info.status).json(info)
-    const payload = await User.findById(user.id)
+    const profile = await User.findProfile({ id: user.id })
     try {
-      const token = await jwt.encodeToken(Object.assign({}, payload))
-      const options = {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        domain:
-          process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
-      }
+      const token = await jwt.encodeToken(Object.assign({}, profile))
       req.login(user, err => {
         if (err) return next(err)
         res
           .status(200)
-          .cookie('access_token', token, options)
+          .cookie('access_token', token, cookieOptions)
           .json(true)
       })
     } catch (err) {
       next(err)
     }
   })(req, res, next)
-
-  // const { email, password, nickname } = req.body
-  // try {
-  // const existed = await User.findOneByEmail(email)
-  // if (!existed.uuid)
-  //   return res.status(409).json({ message: '이미 존재하는 계정입니다' })
-  // const passwordSalt = await bcrypt.hashSync(password, 12)
-  // const UUID = uuid()
-  // const data = {
-  //   email,
-  //   password: passwordSalt,
-  //   uuid: UUID,
-  //   nickname
-  // }
-  // const { insertId } = await User.add(data)
-  // const payload = {
-  //   id: UUID,
-  //   email,
-  //   nickname
-  // }
-  // const token = await jwt.encodeToken(payload)
-  // const options = {
-  //   httpOnly: true,
-  //   maxAge: 1000 * 60 * 60 * 24 * 7,
-  //   domain:
-  //     process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
-  // }
-  // res
-  //   .status(200)
-  //   .cookie('access_token', token, options)
-  //   .json(true)
-  // } catch (err) {
-  //   next(err)
-  // }
 }

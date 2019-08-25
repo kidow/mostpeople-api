@@ -13,12 +13,7 @@ router.get(
     scope: ['email']
   })
 )
-router.get(
-  '/kakao',
-  passport.authenticate('kakao', {
-    authType: 'rerequest'
-  })
-)
+router.get('/kakao', passport.authenticate('kakao'))
 router.get(
   '/naver',
   passport.authenticate('naver', {

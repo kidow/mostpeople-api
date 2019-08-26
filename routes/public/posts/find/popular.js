@@ -8,7 +8,7 @@ module.exports = async (req, res, next) => {
       Post.findTotalPopular()
     ])
     posts.forEach((post, i) => (post.key = `${i + 1}`))
-    res.status(200).json({ posts, ...total })
+    res.status(200).json({ posts, total })
   } catch (err) {
     next(err)
   }

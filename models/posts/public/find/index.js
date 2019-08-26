@@ -121,7 +121,7 @@ const findTotalPopular = _ => {
 
       if (!result.length) return resolve({})
 
-      resolve(result[0])
+      resolve(result[0].total)
     })
   })
 }
@@ -335,11 +335,31 @@ const findBySearch = injection => {
   })
 }
 
+const findTotalByOccupationId = injection => {
+  return new Promise((resolve, reject) => {
+    const sql = `
+      SELECT
+        COUNT(id) AS total
+      FROM
+        posts
+      WHERE
+        status = 1 AND
+        occupationId = ?
+    `
+    con.query(sql, injection, (err, result) => {
+      if (err) return reject(err)
+
+      resolve(result[0].total)
+    })
+  })
+}
+
 module.exports = {
   findPopular,
   findById,
   findByOccupationId,
   findTotalPopular,
   findTimeline,
-  findBySearch
+  findBySearch,
+  findTotalByOccupationId
 }

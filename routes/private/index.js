@@ -1,4 +1,5 @@
 const router = require('express').Router()
+const { isAdmin } = require('@middle')
 
 // router.all('*', (req, res, next) => {
 //   if (!req.user) return res.status(401).json({ message: '로그인을 해주세요' })
@@ -6,6 +7,8 @@ const router = require('express').Router()
 //     return res.status(401).json({ message: '관리자 권한이 없습니다' })
 //   next()
 // })
+
+router.get('/statistics', isAdmin, require('./statistics'))
 
 router.use('/occupations', require('./occupations'))
 router.use('/reports', require('./reports'))

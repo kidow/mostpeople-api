@@ -49,10 +49,9 @@ module.exports = async (req, res, next) => {
     req.login(user, err => {
       if (err) return next(err)
       req.session.profile = {}
-      res
-        .status(200)
-        .cookie('access_token', token, cookieOptions)
-        .json(true)
+      res.status(200)
+      res.cookie('access_token', token, cookieOptions)
+      res.json(true)
     })
   } catch (err) {
     next(err)

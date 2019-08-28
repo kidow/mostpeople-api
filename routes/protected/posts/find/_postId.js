@@ -16,7 +16,9 @@ module.exports = async (req, res, next) => {
       occupation: post.occupation,
       boardType: post.boardType,
       me,
-      isDeleted
+      isDeleted,
+      korName: post.korName,
+      occupationId: post.occupationId
     }
     res.status(200).json(payload)
   } catch (err) {

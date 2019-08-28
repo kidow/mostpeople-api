@@ -194,8 +194,9 @@ const findByOccupationId = ({ offset }, occupationId) => {
         p.uuid,
         p.title,
         u.nickname,
-        DATE_FORMAT(p.createdAt, '%Y-%m-%d') AS createdAt,
+        DATE_FORMAT(p.createdAt, '%Y.%m.%d') AS createdAt,
         p.viewCount,
+        p.content,
         (
           SELECT
             COUNT(likes.id)
@@ -207,7 +208,20 @@ const findByOccupationId = ({ offset }, occupationId) => {
             likes.refId = posts.uuid
           WHERE
             posts.uuid = p.uuid
-        ) AS likeCount
+        ) AS likeCount,
+        (
+          SELECT
+            COUNT(comments.id)
+          FROM
+            posts
+          LEFT JOIN
+            comments
+          ON
+            comments.postId = posts.uuid
+          WHERE
+            posts.uuid = p.uuid AND
+            comments.status = 1
+        ) AS commentCount
       FROM
         posts p
 
@@ -230,6 +244,12 @@ const findByOccupationId = ({ offset }, occupationId) => {
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
+
+      result.forEach(post => {
+        let { thumbnailUrl } = cheerio(post.content)
+        post.thumbnailUrl = thumbnailUrl
+        return
+      })
 
       resolve(result)
     })
@@ -309,7 +329,7 @@ const findBySearch = injection => {
         p.title,
         p.content,
         o.korName,
-        DATE_FORMAT(p.createdAt, '%Y-%m-%d %T') AS createdAt
+        DATE_FORMAT(p.createdAt, '%Y.%m.%d %T') AS createdAt
       FROM
         posts p
       JOIN

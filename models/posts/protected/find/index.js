@@ -93,7 +93,8 @@ const findById = injection => {
         p.content,
         o.korName,
         p.boardType,
-        p.status
+        p.status,
+        p.occupationId
       FROM
         posts p
 

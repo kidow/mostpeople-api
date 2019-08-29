@@ -20,6 +20,7 @@ const findPopular = ({ search, offset, limit = 5 }) => {
         p.createdAt,
         u.nickname,
         p.viewCount,
+        p.content,
         (
           SELECT
             COUNT(likes.id)
@@ -32,6 +33,19 @@ const findPopular = ({ search, offset, limit = 5 }) => {
           WHERE
             posts.uuid = p.uuid
         ) AS likeCount,
+        (
+          SELECT
+            COUNT(comments.id)
+          FROM
+            posts
+          LEFT JOIN
+            comments
+          ON
+            comments.postId = posts.uuid
+          WHERE
+            posts.uuid = p.uuid AND
+            comments.status = 1
+        ) AS commentCount,
         p.occupationId
       FROM
         posts p
@@ -72,6 +86,12 @@ const findPopular = ({ search, offset, limit = 5 }) => {
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
+
+      result.forEach(post => {
+        let { thumbnailUrl } = cheerio(post.content)
+        post.thumbnailUrl = thumbnailUrl
+        return
+      })
 
       resolve(result)
     })

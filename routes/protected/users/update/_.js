@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
   const schema = Joi.object().keys({
     nickname: Joi.string()
       .min(3)
-      .max(8)
+      .max(10)
       .required(),
     korName: Joi.string(),
     facebookUrl: Joi.string().allow(null),

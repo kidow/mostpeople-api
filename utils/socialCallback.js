@@ -30,7 +30,7 @@ module.exports = async (req, res, next, err, user, info) => {
     } else if (info.code === 1001 || info.code === 1002) {
       req.session.profile = {
         email: info.email,
-        emailVerifed: !!info.emailVerifed
+        emailVerified: !!info.emailVerified
       }
       const redirect = redirectURL ? `?redirect=${redirectURL}` : ''
       res.send(

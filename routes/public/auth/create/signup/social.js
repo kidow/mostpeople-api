@@ -6,7 +6,6 @@ const cookieOptions = require('@utils/cookieOptions')
 
 // POST /auth/signup/social
 module.exports = async (req, res, next) => {
-  console.log(req.body)
   const schema = Joi.object().keys({
     email: Joi.string()
       .email()
@@ -49,8 +48,8 @@ module.exports = async (req, res, next) => {
     req.login(user, err => {
       if (err) return next(err)
       req.session.profile = {}
-      res.status(200)
       res.cookie('access_token', token, cookieOptions)
+      res.status(200)
       res.json(true)
     })
   } catch (err) {

@@ -51,8 +51,13 @@ module.exports = async (req, res, next) => {
     req.login(user, err => {
       if (err) return next(err)
       req.session.profile = {}
+      const options = {
+        path: '/',
+        domain:
+          process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
+      }
       res.cookie('access_token', token, cookieOptions)
-      res.clearCookie('profile_token', { path: '/' })
+      res.clearCookie('profile_token', options)
       res.status(200)
       res.json(true)
     })

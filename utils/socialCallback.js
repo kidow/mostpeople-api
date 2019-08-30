@@ -29,10 +29,10 @@ module.exports = async (req, res, next, err, user, info) => {
         emailVerified: !!info.emailVerified,
         providerId: info.providerId
       })
-      const redirect = redirect ? `?redirect=${redirect}` : ''
+      const redirectURL = redirect ? `?redirect=${redirect}` : ''
       res.cookie('profile_token', token, cookieOptions(1))
       res.send(
-        `<script>alert('${info.message}');location.href='${baseURL}/signup/social${redirect}'</script>`
+        `<script>alert('${info.message}');location.href='${baseURL}/signup/social${redirectURL}'</script>`
       )
     } else if (info.code === 1003 || info.code === 1004)
       res.send(

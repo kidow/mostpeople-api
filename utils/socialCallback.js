@@ -6,7 +6,7 @@ const baseURL =
     : 'http://localhost:3000'
 
 module.exports = async (req, res, next, err, user, info) => {
-  const redirectURL = req.session.redirect || ''
+  const { redirect } = req.cookies || ''
   try {
     if (err) next(err)
     else if (user) {
@@ -16,16 +16,32 @@ module.exports = async (req, res, next, err, user, info) => {
         req.login(user, err => {
           if (err) return next(err)
           res.cookie('access_token', token, cookieOptions)
+          if (redirect)
+            res.clearCookie('redirect', {
+              path: '/',
+              domain:
+                process.env.NODE_ENV === 'production'
+                  ? '.mostpeople.kr'
+                  : 'localhost'
+            })
           res.send(
             `<script>alert('${info.message}'); location.href='${baseURL +
-              redirectURL}'</script>`
+              redirect}'</script>`
           )
         })
       } else
         req.login(user, err => {
           if (err) return next(err)
           res.cookie('access_token', token, cookieOptions)
-          res.redirect(baseURL + redirectURL)
+          if (redirect)
+            res.clearCookie('redirect', {
+              path: '/',
+              domain:
+                process.env.NODE_ENV === 'production'
+                  ? '.mostpeople.kr'
+                  : 'localhost'
+            })
+          res.redirect(baseURL + redirect)
         })
     } else if (info.code === 1001 || info.code === 1002) {
       const token = await encodeToken({
@@ -33,7 +49,7 @@ module.exports = async (req, res, next, err, user, info) => {
         emailVerified: !!info.emailVerified,
         providerId: info.providerId
       })
-      const redirect = redirectURL ? `?redirect=${redirectURL}` : ''
+      const redirect = redirect ? `?redirect=${redirect}` : ''
       res.cookie('profile_token', token, cookieOptions)
       res.send(
         `<script>alert('${info.message}');location.href='${baseURL}/signup/social${redirect}'</script>`

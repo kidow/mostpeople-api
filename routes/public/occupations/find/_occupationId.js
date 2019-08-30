@@ -11,6 +11,7 @@ module.exports = async (req, res, next) => {
       Occupation.findById(occupationId),
       Post.findTotalByOccupationId(occupationId)
     ])
+    posts.forEach((post, i) => (post.key = `${i + 1}`))
     const payload = {
       posts,
       occupation,

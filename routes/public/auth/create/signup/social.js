@@ -58,6 +58,7 @@ module.exports = async (req, res, next) => {
       }
       res.cookie('access_token', token, cookieOptions)
       res.clearCookie('profile_token', options)
+      res.clearCookie('redirect', options)
       res.status(200)
       res.json(true)
     })

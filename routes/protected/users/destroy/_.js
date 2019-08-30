@@ -1,5 +1,6 @@
 const User = require('@models/users')
 const moment = require('moment')
+const cookieOptions = require('@utils/cookieOptions')
 
 // DELETE /prt/users
 module.exports = async (req, res, next) => {
@@ -8,15 +9,10 @@ module.exports = async (req, res, next) => {
       { status: 4, deletedAt: moment().format('YYYY-MM-DD hh:mm:ss') },
       { id: req.user.id }
     ])
-    const options = {
-      path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.mostpeople.kr' : 'localhost'
-    }
     req.logout()
     req.session.destroy()
     req.user = null
-    res.clearCookie('access_token', options)
+    res.clearCookie('access_token', cookieOptions())
     res.status(200).json(true)
   } catch (err) {
     next(err)

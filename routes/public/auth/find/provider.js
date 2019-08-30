@@ -7,6 +7,6 @@ module.exports = (req, res, next) => {
   const { provider } = req.params
   let options
   if (provider !== 'kakao') options = { scope: ['email'] }
-  res.cookie('redirect', redirect, cookieOptions)
+  res.cookie('redirect', redirect, cookieOptions(1))
   passport.authenticate(provider, options)(req, res, next)
 }

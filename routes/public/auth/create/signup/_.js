@@ -31,10 +31,9 @@ module.exports = async (req, res, next) => {
       const token = await jwt.encodeToken(Object.assign({}, profile))
       req.login(user, err => {
         if (err) return next(err)
-        res
-          .status(200)
-          .cookie('access_token', token, cookieOptions)
-          .json(true)
+        res.status(200)
+        res.cookie('access_token', token, cookieOptions(1))
+        res.json(true)
       })
     } catch (err) {
       next(err)

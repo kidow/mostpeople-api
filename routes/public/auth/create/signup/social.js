@@ -20,15 +20,16 @@ module.exports = async (req, res, next) => {
   validate(req.body, schema, res, next)
 
   const { email, nickname, occupationId, emailVerified } = req.body
+  const { profile } = req.session
 
   try {
-    const user = await User.findProfile({ email })
-    if (user.email && emailVerified)
-      return res.status(400).json({ message: '이미 존재하는 이메일입니다.' })
-    else if (!user.email)
-      return res.status(404).json({
-        message: '존재하지 않는 계정입니다.'
-      })
+    const user = await User.findProfile({ providerId: profile.providerId })
+
+    if (user.provider === 'kakao' && !emailVerified) {
+      const isEmailExisted = await User.findProfile({ email })
+      if (isEmailExisted.id)
+        return res.status(400).json({ message: '이미 존재하는 이메일입니다.' })
+    }
 
     if (user.nickname)
       return res.status(403).json({ message: '이미 가입되어 있습니다.' })
@@ -41,8 +42,8 @@ module.exports = async (req, res, next) => {
       nickname,
       occupationId
     }
-    if (emailVerified) payload.email = email
-    await User.update([payload, { email }])
+    if (!emailVerified) payload.email = email
+    await User.update([payload, { providerId: profile.providerId }])
 
     const token = await encodeToken(Object.assign({}, user))
     req.login(user, err => {

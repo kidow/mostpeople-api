@@ -18,9 +18,9 @@ module.exports = async (req, res, next) => {
   try {
     const user = await User.findProfile({ email })
     if (type === 'forgot' && !user.password)
-      return res
-        .status(404)
-        .json({ message: '소셜 계정으로 가입한 이메일입니다.' })
+      return res.status(404).json({
+        message: `다음과 같은 소셜 계정으로 가입한 이메일입니다. (${user.provider})`
+      })
     if (type === 'verify' && user.id && user.status !== 4)
       return res.status(400).json({ message: '이미 가입된 계정입니다.' })
     if ((type === 'forgot' && !user.id) || user.status === 4)

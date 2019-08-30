@@ -11,7 +11,7 @@ module.exports = async (req, res, next) => {
     req.logout()
     req.session.destroy()
     req.user = null
-    res.clearCookie('access_token')
+    res.clearCookie('access_token', { path: '/' })
     res.status(200).json(true)
   } catch (err) {
     next(err)

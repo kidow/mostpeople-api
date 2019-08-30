@@ -25,6 +25,8 @@ module.exports = async (req, res, next) => {
     const { providerId } = await decodeToken(req.cookies.profile_token)
     const user = await User.findProfile({ providerId })
 
+    delete user.password
+
     if (user.provider === 'kakao' && !emailVerified) {
       const isEmailExisted = await User.findProfile({ email })
       if (isEmailExisted.id)
@@ -50,7 +52,7 @@ module.exports = async (req, res, next) => {
       if (err) return next(err)
       req.session.profile = {}
       res.cookie('access_token', token, cookieOptions)
-      res.clearCookie('profile_token')
+      res.clearCookie('profile_token', { path: '/' })
       res.status(200)
       res.json(true)
     })

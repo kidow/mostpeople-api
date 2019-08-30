@@ -1,7 +1,7 @@
 const User = require('@models/users')
 const Joi = require('@hapi/joi')
 const validate = require('@lib/validate')
-const { encodeToken } = require('@lib/jwt')
+const { encodeToken, decodeToken } = require('@lib/jwt')
 const cookieOptions = require('@utils/cookieOptions')
 
 // POST /auth/signup/social
@@ -20,10 +20,10 @@ module.exports = async (req, res, next) => {
   validate(req.body, schema, res, next)
 
   const { email, nickname, occupationId, emailVerified } = req.body
-  const { profile } = req.session
 
   try {
-    const user = await User.findProfile({ providerId: profile.providerId })
+    const { providerId } = await decodeToken(req.cookies.profile_token)
+    const user = await User.findProfile({ providerId })
 
     if (user.provider === 'kakao' && !emailVerified) {
       const isEmailExisted = await User.findProfile({ email })
@@ -43,7 +43,7 @@ module.exports = async (req, res, next) => {
       occupationId
     }
     if (!emailVerified) payload.email = email
-    await User.update([payload, { providerId: profile.providerId }])
+    await User.update([payload, { providerId }])
 
     const token = await encodeToken(Object.assign({}, user))
     req.login(user, err => {

@@ -28,12 +28,13 @@ module.exports = async (req, res, next, err, user, info) => {
           res.redirect(baseURL + redirectURL)
         })
     } else if (info.code === 1001 || info.code === 1002) {
-      req.session.profile = {
+      const token = await encodeToken({
         email: info.email,
         emailVerified: !!info.emailVerified,
         providerId: info.providerId
-      }
+      })
       const redirect = redirectURL ? `?redirect=${redirectURL}` : ''
+      res.cookie('profile_token', token, cookieOptions)
       res.send(
         `<script>alert('${info.message}');location.href='${baseURL}/signup/social${redirect}'</script>`
       )

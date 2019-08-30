@@ -50,6 +50,7 @@ module.exports = async (req, res, next) => {
       if (err) return next(err)
       req.session.profile = {}
       res.cookie('access_token', token, cookieOptions)
+      res.clearCookie('profile_token')
       res.status(200)
       res.json(true)
     })

@@ -25,9 +25,7 @@ module.exports = async (req, res, next, err, user, info) => {
       })
     } else if (info.code === 1001 || info.code === 1002) {
       const token = await encodeToken({
-        email: info.email,
-        emailVerified: !!info.emailVerified,
-        providerId: info.providerId
+        email: info.email
       })
       const redirectURL = redirect ? `?redirect=${redirect}` : ''
       res.cookie('profile_token', token, cookieOptions(1))

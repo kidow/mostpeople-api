@@ -1,6 +1,6 @@
 const con = require('@mysql')
 
-const findProfile = injection => {
+const findByEmail = injection => {
   return new Promise((resolve, reject) => {
     const sql = `
       SELECT
@@ -31,7 +31,7 @@ const findProfile = injection => {
         o.uuid = u.occupationId
       WHERE
         u.status != 4 AND
-        ?
+        u.email = ?
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)
@@ -165,7 +165,7 @@ const findBySearch = injection => {
 }
 
 module.exports = {
-  findProfile,
+  findByEmail,
   findById,
   findByNickname,
   findBySearch

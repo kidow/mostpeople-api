@@ -9,14 +9,15 @@ module.exports = async (req, res, next) => {
     email: Joi.string()
       .email()
       .lowercase()
-      .required()
+      .required(),
+    type: Joi.string().required()
   })
   validate(req.body, schema, res, next)
 
   const { email, type } = req.body
 
   try {
-    const user = await User.findProfile({ email })
+    const user = await User.findByEmail(email)
     if (type === 'forgot' && !user.password)
       return res.status(404).json({
         message: `다음과 같은 소셜 계정으로 가입한 이메일입니다. (${user.provider})`

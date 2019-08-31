@@ -1,6 +1,8 @@
 const User = require('@models/users')
 const Joi = require('@hapi/joi')
 const validate = require('@lib/validate')
+const { encodeToken } = require('@lib/jwt')
+const cookieOptions = require('@utils/cookieOptions')
 
 // PUT /prt/users
 module.exports = async (req, res, next) => {
@@ -14,7 +16,7 @@ module.exports = async (req, res, next) => {
     twitterUrl: Joi.string().allow(null),
     intro: Joi.string().allow(null),
     uuid: Joi.string().required(),
-    occupationId: Joi.string().allow(null)
+    occupationId: Joi.string().allow('')
   })
   validate(req.body, schema, res, next)
 
@@ -23,6 +25,10 @@ module.exports = async (req, res, next) => {
 
   try {
     await User.protected.update([req.body, { id: req.user.id }])
+    const user = await User.findByEmail(req.user.email)
+    const token = await encodeToken(Object.assign({}, user), 'user')
+    res.cookie('access_token', token, cookieOptions(1))
+    req.user = user
     res.status(200).json(true)
   } catch (err) {
     next(err)

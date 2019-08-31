@@ -14,24 +14,22 @@ module.exports = async (req, res, next) => {
       .min(3)
       .max(10)
       .required(),
-    occupationId: Joi.string().allow(''),
-    emailVerified: Joi.boolean().required()
+    occupationId: Joi.string().allow('')
   })
   validate(req.body, schema, res, next)
 
-  const { email, nickname, occupationId, emailVerified } = req.body
+  const { nickname, occupationId } = req.body
 
   try {
-    const { providerId } = await decodeToken(req.cookies.profile_token)
-    const user = await User.findProfile({ providerId })
+    const { email } = await decodeToken(req.cookies.profile_token)
+    const user = await User.findByEmail(email)
 
     delete user.password
 
-    if (user.provider === 'kakao' && !emailVerified) {
-      const isEmailExisted = await User.findProfile({ email })
-      if (isEmailExisted.id)
-        return res.status(400).json({ message: '이미 존재하는 이메일입니다.' })
-    }
+    if (!user.email)
+      return res.status(404).json({
+        message: '존재하지 않는 계정입니다.'
+      })
 
     if (user.nickname)
       return res.status(403).json({ message: '이미 가입되어 있습니다.' })
@@ -40,12 +38,10 @@ module.exports = async (req, res, next) => {
     if (isNicknameExisted)
       return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' })
 
-    let payload = {
-      nickname,
-      occupationId
-    }
-    if (!emailVerified) payload.email = email
-    await User.update([payload, { providerId }])
+    await User.update([req.body, { email }])
+
+    user.nickname = nickname
+    user.occupationId = occupationId
 
     const token = await encodeToken(Object.assign({}, user))
     req.login(user, err => {

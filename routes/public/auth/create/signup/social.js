@@ -38,7 +38,7 @@ module.exports = async (req, res, next) => {
     if (isNicknameExisted)
       return res.status(400).json({ message: '이미 존재하는 닉네임입니다.' })
 
-    await User.update([req.body, { email }])
+    await User.update([req.body, email])
 
     user.nickname = nickname
     user.occupationId = occupationId

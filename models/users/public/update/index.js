@@ -8,7 +8,7 @@ const update = injection => {
       SET
         ?
       WHERE
-        ?
+        email = ?
     `
     con.query(sql, injection, (err, result) => {
       if (err) return reject(err)

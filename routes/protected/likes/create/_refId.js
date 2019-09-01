@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
   try {
     const isLiked = await Like.protected.findByRefId([req.user.id, refId])
     let addLike
-    if (isLiked) {
+    if (isLiked.id) {
       addLike = false
       await Like.protected.destroy([req.user.id, refId])
     } else {

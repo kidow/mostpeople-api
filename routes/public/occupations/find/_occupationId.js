@@ -17,8 +17,9 @@ module.exports = async (req, res, next) => {
       occupation,
       breadcrumbs: [
         {
-          url: `/board/${occupation.uuid}`,
-          name: `${occupation.korName}`
+          uuid: occupation.uuid,
+          name: `${occupation.korName}`,
+          page: '/board/'
         }
       ],
       total

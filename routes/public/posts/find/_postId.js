@@ -11,12 +11,14 @@ module.exports = async (req, res, next) => {
     ])
     const breadcrumbs = [
       {
-        url: `/board/${post.occupationId}`,
-        name: post.korName
+        uuid: post.occupationId,
+        name: post.korName,
+        page: '/board/'
       },
       {
-        url: `/post/${postId}`,
-        name: post.title
+        uuid: postId,
+        name: post.title,
+        page: '/post/'
       }
     ]
     await Post.update([{ viewCount: post.viewCount + 1 }, postId])

@@ -11,7 +11,6 @@ module.exports = async (req, res, next) => {
     boardType: Joi.number().required()
   })
   validate(req.body, schema, res, next)
-  console.log(req.body)
 
   const { postId } = req.params
   const { userId } = req.query

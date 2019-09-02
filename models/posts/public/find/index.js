@@ -155,6 +155,7 @@ const findById = injection => {
         p.createdAt,
         p.occupationId,
         o.korName,
+        op.korName AS occupation,
         u.nickname,
         p.viewCount,
         p.boardType,
@@ -185,6 +186,11 @@ const findById = injection => {
         likes l
       ON
         l.refId = p.uuid
+      
+      LEFT JOIN
+        occupations op
+      ON
+        op.uuid = u.occupationId
 
       WHERE
         p.uuid = ? AND

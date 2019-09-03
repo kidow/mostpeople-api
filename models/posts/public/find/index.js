@@ -80,6 +80,9 @@ const findPopular = ({ search, offset, limit = 5 }) => {
         		posts.uuid = p.uuid
         ) > 10 AND
         DATE_FORMAT(p.createdAt, '%Y%m%d') > DATE_ADD(NOW(), INTERVAL -7 DAY) ${searchSQL}
+        
+      ORDER BY
+        p.createdAt DESC
 
       ${limitSQL}
       ${offsetSQL}
@@ -251,7 +254,7 @@ const findByOccupationId = ({ offset }, occupationId) => {
       FROM
         posts p
 
-      JOIN
+      LEFT JOIN
         users u
       ON
         p.userId = u.uuid
@@ -264,6 +267,9 @@ const findByOccupationId = ({ offset }, occupationId) => {
       WHERE
         p.occupationId = ? AND
         p.status = 1
+
+      ORDER BY
+        p.createdAt DESC
 
       LIMIT 20
       ${offsetSQL}

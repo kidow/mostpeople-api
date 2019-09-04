@@ -87,7 +87,7 @@ const findByGroup = _ => {
             occupations.uuid = posts.occupationId
           WHERE
             occupations.uuid = o.uuid AND
-            DATE_FORMAT(posts.createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -1 DAY) AND
+            posts.createdAt > DATE_ADD(NOW(), INTERVAL -1 DAY) AND
             posts.status = 1
         ) AS postsCount
       FROM
@@ -144,13 +144,13 @@ const findByGroupByNew = _ => {
             occupations.uuid = posts.occupationId
           WHERE
             occupations.uuid = o.uuid AND
-            DATE_FORMAT(posts.createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -1 DAY) AND
+            posts.createdAt > DATE_ADD(NOW(), INTERVAL -1 DAY) AND
             posts.status = 1
         ) AS postsCount
       FROM
         occupations o
       WHERE
-        DATE_FORMAT(o.createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -7 DAY)
+        o.createdAt > DATE_ADD(NOW(), INTERVAL -7 DAY)
       ORDER BY
         o.createdAt DESC
     `

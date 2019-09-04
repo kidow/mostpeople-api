@@ -33,7 +33,23 @@ const findTotal = _ => {
             COUNT(id)
           FROM
             static_professions
-        ) AS profession
+        ) AS profession,
+        (
+        	SELECT
+        		COUNT(id)
+        	FROM
+        		improvements
+        	WHERE
+        		createdAt > DATE_ADD(NOW(), INTERVAL -8 DAY)
+        ) AS weeklyImprovements,
+        (
+        	SELECT
+        		COUNT(id)
+        	FROM
+        		reports
+        	WHERE
+        		createdAt > DATE_ADD(NOW(), INTERVAL -8 DAY)
+        ) AS weeklyReports
     `
     con.query(sql, (err, result) => {
       if (err) return reject(err)

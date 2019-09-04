@@ -79,7 +79,7 @@ const findPopular = ({ search, offset, limit = 5 }) => {
         	WHERE
         		posts.uuid = p.uuid
         ) > 10 AND
-        DATE_FORMAT(p.createdAt, '%Y%m%d') > DATE_ADD(NOW(), INTERVAL -7 DAY) ${searchSQL}
+        p.createdAt > DATE_ADD(NOW(), INTERVAL -7 DAY) ${searchSQL}
         
       ORDER BY
         p.createdAt DESC

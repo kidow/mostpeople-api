@@ -4,13 +4,13 @@ const findSitemaps = _ => {
   return new Promise((resolve, reject) => {
     const sql = `
       (SELECT
-        CONCAT("/board/", o.uuid) AS url,
+        CONCAT("/board/", o.korName, '-', o.uuid) AS url,
         "weekly" AS changefreq,
         DATE_FORMAT(o.updatedAt, "%Y-%m-%dT%T.000Z") AS lastmodISO
       FROM
         occupations o
       WHERE
-        DATE_FORMAT(o.createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -6 MONTH)
+        o.createdAt > DATE_ADD(NOW(), INTERVAL -6 MONTH)
       ORDER BY
         o.createdAt DESC)
     UNION ALL
@@ -21,7 +21,7 @@ const findSitemaps = _ => {
       FROM
         posts p
       WHERE
-        DATE_FORMAT(p.createdAt, '%Y-%m-%d') > DATE_ADD(NOW(), INTERVAL -3 MONTH)
+        p.createdAt > DATE_ADD(NOW(), INTERVAL -3 MONTH)
       ORDER BY
         p.createdAt DESC)
         LIMIT 40000
